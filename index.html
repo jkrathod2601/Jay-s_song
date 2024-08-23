@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jay's Favourite Songs</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 30px;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .iframe-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            background: #000;
+        }
+        .iframe-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 0;
+        }
+        .card-body {
+            padding: 0;
+        }
+        .card-header {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Jay's Favourite</h1>
+        <div id="songList" class="row">
+            <!-- YouTube iframes will be added here -->
+        </div>
+    </div>
+
+    <!-- Bootstrap and jQuery JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Array of YouTube video URLs
+        const youtubeUrls = [
+            'https://youtu.be/Gs2riblDG5A?si=LzDL3p8pl2RmkgQP',
+            'https://youtu.be/oM7ob-etcsA?si=_pSItDNdGzCdO4f0',
+            'https://youtu.be/skFJ4lN6JYc?si=9gcAqxUvZcQpsxcJ',
+            'https://youtu.be/tv-n8DDpEKc?si=1L8oqudUrhSRfT9b',
+            'https://youtu.be/dPaZNGRcPK4?si=gdEp4l1DfHM02ucj',
+            'https://youtu.be/tyt_d6SN0nE?si=bQSc2rHCuHAHZYH6',
+            'https://youtu.be/MMwaqACrcpU?si=tRlWJqOQ0sKnR84H',
+            'https://youtu.be/t6CQVf6E_RE?si=EH77D-IhuIGOEAE4',
+            'https://youtu.be/7hE9M8pTbek?si=lPDpOUkonmYzUKG0',
+            'https://youtu.be/OumlYgpiA88?si=Ggpa7xiKAWMKW3TA',
+            'https://youtu.be/aYry8goar28?si=KpWphF97oXs5PpzC',
+            'https://youtu.be/0wNmT99M1Iw?si=RMT4UrW1I7cLZxnA',
+            'https://youtu.be/N2gJlor_5hg?si=k6PTz6MkHgv4Gzka',
+            'https://youtu.be/vnt65_GElMU?si=z5PCrQy_S8sDqqDI',
+            'https://youtu.be/epm7tAtEvYA?si=uff0hyqFFJ4MgJWl',
+            'https://youtu.be/tYHrT837H0M?si=ob_wv2TzKcCw7IFP',
+            'https://youtu.be/_trU-Wt9ucI?si=AkfRvMcvaX3G2jvm',
+            'https://youtu.be/VlyLyBqNvVE?si=-UCxbTVGlYm9c5Ow',
+            'https://youtu.be/3u__IvHX_rI?si=fF6LtljDCElB7p_s',
+            'https://youtu.be/mt-5ZbKqiDc?si=oR89o7JJitPz8OrT',
+            'https://youtu.be/XmPT_5_laNM?si=xlNGbzmgo9b4rokx',
+            'https://youtu.be/kILK4vKdHFQ?si=rlgAnNiclF5zmuse',
+            'https://youtu.be/BQ61y0XW-fM?si=ydgll2YSwWrv9lge',
+            'https://youtu.be/xPdMmSpCJXc?si=d4-UKgJb16rh_sdo',
+            'https://youtu.be/K_TT683e3EM?si=CdrVXEuvevyMj4aS'
+        ];
+
+        function extractVideoId(url) {
+            let videoId = '';
+            try {
+                const urlObj = new URL(url);
+                const params = new URLSearchParams(urlObj.search);
+                if (params.has('v')) {
+                    videoId = params.get('v');
+                } else {
+                    const pathParts = urlObj.pathname.split('/');
+                    if (pathParts.length > 1) {
+                        videoId = pathParts[pathParts.length - 1];
+                    }
+                }
+            } catch (e) {
+                console.error('Invalid URL:', url);
+            }
+            return videoId;
+        }
+
+        function loadVideos() {
+            const songList = document.getElementById('songList');
+            youtubeUrls.forEach(url => {
+                const videoId = extractVideoId(url);
+                if (videoId) {
+                    const card = document.createElement('div');
+                    card.classList.add('col-md-6', 'col-lg-4');
+                    card.innerHTML = `
+                        <div class="card">
+                            <div class="iframe-container">
+                                <iframe width="560" height="315" src="https://www.youtube.com/embed/${videoId}?controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    `;
+                    songList.appendChild(card);
+                }
+            });
+        }
+
+        // Load videos on page load
+        document.addEventListener('DOMContentLoaded', loadVideos);
+    </script>
+</body>
+</html>
